@@ -1,0 +1,45 @@
+def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
+    yaw_WgripDegree = np.radians(yaw_WgripDegree)
+
+    L1 = 0.152
+    L2 = 0.120
+    L3 = 0.244
+    L4 = 0.093
+    L5 = 0.213
+    L6 = 0.104
+    L7 = 0.085
+    L8 = 0.092
+    L9 = 0.0535
+    L10 = 0.059
+
+    xCen = xWgrip - L9*np.sin(yaw_WgripDegree) + xoffset
+	  yCen = yWgrip - L9*np.cos(yaw_WgripDegree) - yoffset
+	  zCen = zWgrip - zoffset
+
+    #CHANGED THIS LITTLE CHUNK HERE arcsin d/r is the little triangle you make from gripper to center
+    d = L2 - L4 + L6 
+    r = np.hypot(xCen, yCen) #hypotenuse function
+    theta1 = np.arctan2(yCen, xCen) - np.arcsin(d/r)
+
+    theta6 = theta1 + np.pi/2 - yaw_WgripDegree
+
+    xEnd = xCen - L9 - L7 
+	  yEnd = yCen - (0.027*np.cos(theta1) + L8*np.cos(theta1) + L9*np.sin(theta1))
+	  zEnd = zCen - L10 - L8
+
+    # 6. Side view: planar 2-link problem (cosine rule), elbow-up
+    R = xEnd*np.cos(theta1) + yEnd*np.sin(theta1)   # horizontal reach from joint 2
+    h = zEnd - L1                                     # height above joint 2
+    D = np.hypot(R, h)
+
+    #law of cosines here
+    cos_elbow = (L3**2 + L5**2 - D**2) / (2*L3*L5)
+    theta3 = np.pi - np.arccos(cos_elbow)
+
+    cos_psi = (L3**2 + D**2 - L5**2) / (2*L3*D)
+    psi = np.arccos(cos_psi)
+    theta2 = -(np.arctan2(h, R) + psi)
+
+    theta4 = -np.pi/2 - theta2 - theta3
+
+    return theta1, theta2, theta3, theta4, theta5, theta6
