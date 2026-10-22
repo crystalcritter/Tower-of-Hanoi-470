@@ -8,6 +8,8 @@ forward kinematics:
 final position:
 [ 122.74110329  -61.35864394  112.19283558 -140.83419165  -90.
    77.74110329]
+measured position: [17.5 -9.6 5.4]
+
 
 
 ANGLES 2:
@@ -20,5 +22,6 @@ forward kinematics:
 final position:
 [179.38511109 -60.34319423  58.46989844 -88.12670421 -90.
   -0.61488891]
+measured position: [26.1 35.4 22.7] 
 
 idk if "final position" is coordinates or joint angles or what
