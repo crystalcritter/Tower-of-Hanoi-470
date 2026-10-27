@@ -6,17 +6,24 @@ import numpy as np
 # ========================= Student's code starts here =========================
 
 # Params for camera calibration
-theta = 0.0
-beta = 0.0
-tx = 0.0
-ty = 0.0
+theta = 0.0 #complete
+beta = 0.0 #complete
+tx = 0.0 #complete
+ty = 0.0 #complete
 
 #Rcw = np.array([[np.cos(theta), -np.sin(theta)],[np.sin(theta), np.cos(theta)]])
-cal1 = np.array([335.143310546875, 191.04351806640625])
-cal2 = np.array([397.49176025390625, 189.04400634765625])
-theta = np.arctan((cal2[0]-cal1[0])/(cal2[1]-cal1[1]))
-Rcx = 
-#these are the pixel coordinates for the calibration, it's 10cm
+#xw yw = Rcw*xcyc + p
+cal1 = np.array([335.143310546875, 191.04351806640625]) #c
+cal2 = np.array([397.49176025390625, 189.04400634765625]) #c
+diff = cal2-cal1
+theta = np.arctan(diff[1]/diff[0])
+Rcw = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+beta = np.linalg.norm(cal2-cal1)/0.1 #in meters
+camera_coords = np.array([328.3765869140625, 223.10508728027344])
+world_coords = np.array([0.45,0.28])*beta
+translation = world_coords - Rcw@camera_coords
+tx = translation[0]
+ty = translation[1]
 
 
 # Function that converts image coord to world coord
