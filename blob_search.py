@@ -11,6 +11,14 @@ beta = 0.0
 tx = 0.0
 ty = 0.0
 
+#Rcw = np.array([[np.cos(theta), -np.sin(theta)],[np.sin(theta), np.cos(theta)]])
+cal1 = np.array([335.143310546875, 191.04351806640625])
+cal2 = np.array([397.49176025390625, 189.04400634765625])
+theta = np.arctan((cal2[0]-cal1[0])/(cal2[1]-cal1[1]))
+Rcx = 
+#these are the pixel coordinates for the calibration, it's 10cm
+
+
 # Function that converts image coord to world coord
 def IMG2W(col, row):
     pass
@@ -84,7 +92,7 @@ def blob_search(image_raw, color):
     # Find blob centers in the image coordinates
     blob_image_center = []
     num_blobs = len(keypoints)
-    print(num_blobs)
+    # print(num_blobs)
     for i in range(num_blobs):
         blob_image_center.append((keypoints[i].pt[0],keypoints[i].pt[1]))
 
@@ -114,6 +122,7 @@ def blob_search(image_raw, color):
     # cv2.imshow("Mask View", mask_imageo)
     cv2.namedWindow(f"Keypoint View - {color}")
     cv2.imshow(f"Keypoint View - {color}", im_with_keypoints)
+    print([kp.pt for kp in keypoints])
 
     cv2.waitKey(2)
 
