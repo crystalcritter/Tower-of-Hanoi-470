@@ -184,12 +184,24 @@ class UR3e(Node):
         return False
 
 
-    def move_block_vision(self, start_xy, target_xyz):
+    def move_block_vision(self, start_xy, start_z, target_xyz):
         """TODO: Pick block at start_xy and place it at target_xy, both in world frame.
         Hint: You can use your existing lab_invk, move_arm and set_io to pick and place a block.
         """
         # ========================= Student's code starts here =========================
-        pass
+        start_angles = lab_invk(start_xy[0], start_xy[1], start_z, 0)
+        move_arm(self,start_angles)
+        self.set_io(0,1)
+        if self.analog_in_0_value < 2:
+            print("missing block")
+        end_angles = lab_invk(target_xyz[0], target_xyz[1], target_xyz[2], 0)
+        move_arm(self,end_angles)
+        self.set_io(0,0)
+        #detects blocks in mask --> transforms those coordinates to world coordinates 
+        #world coordinates to move_block_vision
+        #turns on, moves stuff, turns off
+
+
         # ========================= Student's code ends here =========================
 
 
@@ -221,6 +233,11 @@ def main(args=None):
         # Snapshot once 
         green_snapshot = list(node.green_blocks)
         node.get_logger().info(f"Snapshot green blocks: {green_snapshot}")
+        orange_snapshot = list(node.orange_blocks)
+        node.get_logger().info(f"Snapshot orange blocks: {orange_snapshot}")
+
+        # print("Green blocks snapshot:", green_snapshot)
+        # print("Orange blocks snapshot:", orange_snapshot)
 
         # Execute task once based on snapshot
         # ========================= Student's code starts here =========================
@@ -233,14 +250,42 @@ def main(args=None):
         (you can set z based on your needs).
         """
 
-        # ========================= Student's code ends here ===========================
+        count = 0
+        # if count == 0: #green green orange orange
+        #     start_z = 0.06
+        # elif count == 1:
+        #     start_z = 0.03
+        # elif count == 2:
+        #     start_z = 0.06
+        # elif count == 3:
+        #     start_z = 0.03
+        # image_callback(self, msg: Image)
+        # pos_green = green_snapshot.green_blocks
+        # pos_orange = self.orange_blocks.xw_yw #both oranges
+        # pos = np.block([[pos_green], [pos_orange]])
+        
+        for i in range(4):
+            start_z = 0
+            end_z = 0
+            if count%2 == 0:
+                start_z = 0.06
+                end_z = 0.03
+            else:
+                start_z = 0.03
+                end_z = 0.06
+            start_xy = np.array([pos[i][0], pos[i][1]])
+            target_xyz = np.array([start_xy[0]+0.10, start_xy[1]+0.10, end_z])
+            node.move_block_vision(start_xy, start_z, target_xyz)
+            count += 1
+            node.move_arm(go_away)
 
-        node.move_arm(go_away)
+            
+
+            while rclpy.ok():
+                rclpy.spin_once(node, timeout_sec=0.1)
+    # ========================= Student's code ends here ===========================
+
         node.get_logger().info("Task Completed. Press Ctrl+C to exit.")
-
-        while rclpy.ok():
-            rclpy.spin_once(node, timeout_sec=0.1)
-
     except KeyboardInterrupt:
         pass
     finally:

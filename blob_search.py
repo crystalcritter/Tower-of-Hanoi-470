@@ -16,11 +16,11 @@ ty = 0.0 #complete
 cal1 = np.array([335.143310546875, 191.04351806640625]) #c
 cal2 = np.array([397.49176025390625, 189.04400634765625]) #c
 diff = cal2-cal1
-theta = np.arctan(diff[1]/diff[0])
+theta = np.arctan(diff[0]/diff[1])
 Rcw = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 beta = np.linalg.norm(cal2-cal1)/0.1 #in meters
-camera_coords = np.array([328.3765869140625, 223.10508728027344])
-world_coords = np.array([0.45,0.28])*beta
+camera_coords = np.array([305, 117])/beta
+world_coords = np.array([0,0])
 translation = world_coords - Rcw@camera_coords
 tx = translation[0]
 ty = translation[1]
@@ -28,8 +28,17 @@ ty = translation[1]
 
 # Function that converts image coord to world coord
 def IMG2W(col, row):
-    pass
+    # camera_coords = np.array([col, row])
+    # world_coords = Rcw@camera_coords + np.array([tx, ty])
+    # world_coords = world_coords.tolist()
+    # print("world coords:", world_coords)
+    # return world_coords
+    p = (Rcw@np.array([col, row]) + np.array([tx, ty]))/ beta
+    print(theta)
+    print("translation", tx, ty)
 
+    # print("world coords:", p)
+    return (float(p[0]), float(p[1]))
 # ========================= Student's code ends here ===========================
 
 def blob_search(image_raw, color):
